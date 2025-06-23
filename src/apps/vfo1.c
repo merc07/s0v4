@@ -57,7 +57,7 @@ void VFO1_update(void) {
         if (gSettings.mWatch == MW_SWITCH) {
           VFO_Select(mWatchVfoIndex);
           mWatchVfo = NULL;
-        } else if (mWatchVfoIndex != gSettings.activeVFO) {
+          } else if (mWatchVfoIndex != gSettings.activeVFO) {
           mWatchVfo = shadowVfo;
         }
       } else {
@@ -170,8 +170,8 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
       return true;
     case KEY_EXIT:
       if (gLastActiveLoot->f != radio.rxF) {
-        for (uint8_t i = 0; i < VFO_GetSize(); ++i) {
-          if (VFO_Get(i)->rxF == gLastActiveLoot->f) {
+          for (uint8_t i = 0; i < VFO_GetSize(); ++i) {
+            if (VFO_Get(i)->rxF == gLastActiveLoot->f) {
             VFO_Select(i);
             mWatchVfo = NULL;
             return true;
@@ -241,7 +241,7 @@ static void renderTxRxState(uint8_t y, bool isTx) {
 
 static void renderChannelName(uint8_t y, uint16_t channel) {
   FillRect(0, y - 14, 30, 7, C_FILL);
-  PrintSmallEx(15, y - 9, POS_C, C_INVERT, "VFO %u/%u", gSettings.activeVFO + 1,
+  PrintSmallEx(15, y - 9, POS_C, C_INVERT, "VFO %u/%u", gSettings.activeVFO +1,
                VFO_GetSize());
   if (RADIO_IsChMode()) {
     PrintSmallEx(32, y - 9, POS_L, C_FILL, "MR %03u", channel);
@@ -277,7 +277,7 @@ void VFO1_render(void) {
     PrintMediumEx(LCD_XCENTER, BASE - 16, POS_C, C_FILL, radio.name);
   } else {
     if (gCurrentBand.meta.type == TYPE_BAND_DETACHED) {
-      PrintSmallEx(32, 12, POS_L, C_FILL, "*%s", gCurrentBand.name);
+      PrintSmallEx(32, 12, POS_L, C_FILL, "*%s", gCurrentBand.name );
     } else {
       PrintSmallEx(
           32, 12, POS_L, C_FILL, radio.fixedBoundsMode ? "=%s:%u" : "%s:%u",
@@ -286,6 +286,7 @@ void VFO1_render(void) {
   }
 
   // Шаг, полоса, уровень SQL, мощность, субтоны, названия каналов.
+  // Step, Bandwidth, SQL Level, Power, Subtones, Channel Names.
 
   renderTxRxState(BASE, gTxState == TX_ON);
   UI_BigFrequency(BASE, f);
@@ -310,7 +311,16 @@ void VFO1_render(void) {
 
   if (gSettings.iAmPro) {
     uint32_t lambda = 29979246 / (radio.rxF / 100);
-    PrintSmallEx(0, BASE - 14, POS_L, C_FILL, "L=%u/%ucm", lambda, lambda / 4);
+    if (lambda>99) {
+      PrintSmallEx(0, BASE - 18, POS_L, C_FILL, "F: %d.%02dm", lambda/100,lambda%100);
+    } else {
+      PrintSmallEx(0, BASE - 18, POS_L, C_FILL, "F: %ucm", lambda);
+    }
+    if ((lambda/4)>99) {
+      PrintSmallEx(0, BASE - 12, POS_L, C_FILL, "Q: %d.%02dm", lambda/4/100,lambda/4%100);
+    } else {
+      PrintSmallEx(0, BASE - 12, POS_L, C_FILL, "Q: %ucm", lambda / 4);
+    }
   }
 
   if (gMonitorMode) {

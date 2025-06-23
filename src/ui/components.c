@@ -59,6 +59,23 @@ void UI_RSSIBar(uint8_t y) {
   }
 
   PrintMediumEx(LCD_WIDTH - 1, BAR_BASE, 2, true, "%d", Rssi2DBm(rssi));
+ 
+ uint8_t dBm=Rssi2DBm(rssi)*-1;
+ uint8_t dBmMax6=((radio.rxF / MHZ)>=30) ? 93 : 73;
+ uint8_t dBmMax10=((radio.rxF / MHZ)>=30) ? 33 : 13;
+  
+ if (gIsListening && dBm>0 && dBm<(dBmMax6+49)) { // active
+  if(dBm>(dBmMax6-10)){ 
+  uint8_t s=((dBm-dBmMax6)/6)+(1*((dBm-dBmMax6)%6)>0); 
+  if (dBm<dBmMax6) s=0;
+  PrintMediumEx(LCD_WIDTH - 1, BAR_BASE+8, POS_R, C_FILL, "S%u", 9-s);
+    } else {
+     uint8_t s=((dBm-dBmMax10)/10)+(1*((dBm-dBmMax10)%10)>0); 
+     if (dBm<dBmMax10) s=0;
+     PrintMediumEx(LCD_WIDTH - 1, BAR_BASE+8, POS_R, C_FILL, "S9+%u0", 6-s);
+  }
+  } 
+  
 }
 
 void drawTicks(uint8_t y, uint32_t fs, uint32_t fe, uint32_t div, uint8_t h) {
@@ -99,6 +116,9 @@ void UI_Scanlists(uint8_t baseX, uint8_t baseY, uint16_t sl) {
 
 void UI_DrawLoot(const Loot *loot, uint8_t x, uint8_t y, TextPos pos) {
   char c = ' ';
+  if (loot->open && y==LCD_HEIGHT-1) {
+    c = '*';
+  }
   if (loot->blacklist) {
     c = '-';
   }
@@ -107,7 +127,7 @@ void UI_DrawLoot(const Loot *loot, uint8_t x, uint8_t y, TextPos pos) {
   }
 
   PrintMediumEx(x, y, pos, C_INVERT, "%c%u.%05u %c", c, loot->f / MHZ,
-                loot->f % MHZ, loot->open ? '!' : ' ');
+                loot->f % MHZ, loot->open ? '*' : ' ');
 }
 
 void UI_BigFrequency(uint8_t y, uint32_t f) {
