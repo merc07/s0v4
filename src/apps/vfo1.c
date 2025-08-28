@@ -21,7 +21,6 @@
 #include "finput.h"
 
 static char String[16];
-
 static void setChannel(uint16_t v) { RADIO_TuneToCH(v); }
 
 static void tuneTo(uint32_t f) {
@@ -31,9 +30,11 @@ static void tuneTo(uint32_t f) {
 }
 
 void VFO1_init(void) {
+  VFO_Select(3); // quick switch to VFO4
   VFO_LoadScanlist(0);
   RADIO_LoadCurrentVFO();
   gLastActiveLoot = NULL;
+  
 }
 
 static uint32_t lastUpdate;
@@ -210,7 +211,8 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
       APPS_run(APP_CH_CFG);
       return true;
     case KEY_STAR:
-      APPS_run(APP_LOOT_LIST);
+    
+    APPS_run(APP_LOOT_LIST);
       return true;
     case KEY_SIDE1:
       gMonitorMode = !gMonitorMode;
