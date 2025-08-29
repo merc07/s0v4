@@ -46,7 +46,11 @@ bool BANDSCAN_key(KEY_Code_t key, Key_State_t state) {
   }
   if (state == KEY_RELEASED) {
     switch (key) {
-    case KEY_UP:
+    case KEY_EXIT:
+      VFO_Select(3); // switch to VFO4 for loot over write  
+      APPS_exit();
+      return true;
+      case KEY_UP:
     case KEY_DOWN:
       SCAN_Next(key == KEY_UP);
       return true;
@@ -63,6 +67,7 @@ bool BANDSCAN_key(KEY_Code_t key, Key_State_t state) {
       return true;
     case KEY_PTT:
       if (gLastActiveLoot && !gSettings.keylock) {
+        VFO_Select(3); // switch to VFO4 for loot over write
         RADIO_TuneToSave(gLastActiveLoot->f);
         APPS_run(APP_VFO1);
         return true;

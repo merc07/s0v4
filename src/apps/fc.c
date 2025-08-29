@@ -179,6 +179,7 @@ bool FC_key(KEY_Code_t key, Key_State_t state) {
       return true;
     case KEY_PTT:
       if (gLastActiveLoot) {
+        VFO_Select(3); // switch to VFO4 for loot over write
         FC_deinit();
         RADIO_TuneToSave(gLastActiveLoot->f);
         APPS_run(APP_VFO1);

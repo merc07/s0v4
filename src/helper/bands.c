@@ -55,7 +55,7 @@ PCal POWER_CALIBRATIONS[] = {
      (PCal){.s = 43000000, .e = 46999999, .c = DEFAULT_POWER_CALIB},
      (PCal){.s = 47000000, .e = 61999999, .c = {50, 100, 140}},
 
-   */
+   
 
     // Standard UV-K6 Power Calibration
 
@@ -64,7 +64,7 @@ PCal POWER_CALIBRATIONS[] = {
     (PCal){.s = 20500000, .e = 21499999, .c = {41, 64, 135}},
     (PCal){.s = 21500000, .e = 21999999, .c = {44, 46, 50}},
     //(PCal){.s = 22000000, .e = 23999999, .c = {0, 0, 0}},     // no power
-    // output power
+    
     (PCal){.s = 24000000, .e = 26499999, .c = {62, 82, 130}},
     (PCal){.s = 26500000, .e = 26999999, .c = {65, 92, 140}},
     (PCal){.s = 27000000, .e = 27499999, .c = {73, 103, 140}},
@@ -79,7 +79,7 @@ PCal POWER_CALIBRATIONS[] = {
     // need to add this line as it will drop to the default if not found ?
     (PCal){.s = 47000000, .e = 61999999, .c = {46, 77, 140}},
 
-    /*
+    */
 
 
        // Modified UV-K6 Power Calibrations BFU550 A + Seperated Coils
@@ -90,8 +90,9 @@ PCal POWER_CALIBRATIONS[] = {
         (PCal){.s = 21500000, .e = 21999999, .c = {82, 108, 140}},
         (PCal){.s = 22000000, .e = 22499999, .c = {96, 115, 140}},
         (PCal){.s = 22500000, .e = 23499999, .c = {93, 106, 120}},
-      //(PCal){.s = 23500000, .e = 23999999, .c = {0, 0, 0}},       // no power
-      output power (PCal){.s = 24000000, .e = 25499999, .c = {50, 78, 135}},
+        //(PCal){.s = 23500000, .e = 23999999, .c = {0, 0, 0}},       // no power
+      
+        (PCal){.s = 24000000, .e = 25499999, .c = {50, 78, 135}},
         (PCal){.s = 25500000, .e = 26999999, .c = {48, 62, 108}},
         (PCal){.s = 27000000, .e = 27499999, .c = {50, 73, 118}},
         (PCal){.s = 27500000, .e = 28499999, .c = {59, 85, 130}},
@@ -106,7 +107,7 @@ PCal POWER_CALIBRATIONS[] = {
       //(PCal){.s = 42500000, .e = 46900000, .c = DEFAULT_POWER_CALIB},
         (PCal){.s = 47000000, .e = 61999999, .c = {46, 75, 140}},
 
-    */
+    
 
 };
 

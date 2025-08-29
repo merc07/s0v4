@@ -79,6 +79,13 @@ bool CHSCAN_key(KEY_Code_t key, Key_State_t state) {
     case KEY_STAR:
       APPS_run(APP_LOOT_LIST);
       return true;
+    case KEY_PTT:
+      if (gLastActiveLoot && !gSettings.keylock) {
+        VFO_Select(3); // switch to VFO4 for loot over write
+        RADIO_TuneToSave(gLastActiveLoot->f);
+        APPS_run(APP_VFO1);
+        return true;
+      }
     default:
       break;
     }

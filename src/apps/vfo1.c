@@ -30,7 +30,6 @@ static void tuneTo(uint32_t f) {
 }
 
 void VFO1_init(void) {
-  VFO_Select(3); // quick switch to VFO4
   VFO_LoadScanlist(0);
   RADIO_LoadCurrentVFO();
   gLastActiveLoot = NULL;
@@ -170,6 +169,11 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
       SP_NextGraphUnit(key == KEY_SIDE1);
       return true;
     case KEY_EXIT:
+    APPS_run(APP_SCANER);
+      return true;
+    
+    /*
+
       if (gLastActiveLoot->f != radio.rxF) {
           for (uint8_t i = 0; i < VFO_GetSize(); ++i) {
             if (VFO_Get(i)->rxF == gLastActiveLoot->f) {
@@ -182,6 +186,7 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
         return true;
       }
       break;
+      */
     default:
       break;
     }
