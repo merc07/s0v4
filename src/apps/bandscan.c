@@ -36,6 +36,7 @@ bool BANDSCAN_key(KEY_Code_t key, Key_State_t state) {
   bool longHeld = state == KEY_LONG_PRESSED;
   bool simpleKeypress = state == KEY_RELEASED;
   if ((longHeld || simpleKeypress) && (key > KEY_0 && key < KEY_9)) {
+    VFO_Select(3); // switch to VFO4 for loot over write
     gSettings.currentScanlist = CHANNELS_ScanlistByKey(
         gSettings.currentScanlist, key, longHeld && !simpleKeypress);
     CHANNELS_LoadScanlist(TYPE_FILTER_BAND, gSettings.currentScanlist);

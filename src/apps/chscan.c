@@ -64,7 +64,11 @@ bool CHSCAN_key(KEY_Code_t key, Key_State_t state) {
   }
   if (state == KEY_RELEASED) {
     switch (key) {
-    case KEY_UP:
+    case KEY_EXIT:
+      VFO_Select(3); // switch to VFO4 for loot over write  
+      APPS_exit();
+      return true;
+      case KEY_UP:
     case KEY_DOWN:
       nextWithTimeout();
       return true;

@@ -300,21 +300,27 @@ void VFO1_render(void) {
   PrintMediumEx(LCD_WIDTH - 1, BASE - 12, POS_R, C_FILL, mod);
   renderChannelName(21, radio.channel);
   const uint32_t step = StepFrequencyTable[radio.step];
-  if (potentialTxState == TX_ON) {
-    PrintSmallEx(LCD_XCENTER, BASE + 6, POS_C, C_FILL, "%s",
-                 TX_POWER_NAMES[radio.power]);
-  }
+  
   PrintSmallEx(LCD_WIDTH, BASE + 6, POS_R, C_FILL, "%d.%02d", step / KHZ,
                step % KHZ);
 
-  if (radio.code.rx.type) {
-    PrintRTXCode(String, radio.code.rx.type, radio.code.rx.value);
-    PrintSmallEx(0, BASE - 6, POS_L, C_FILL, "R%s", String);
-  }
+    if (potentialTxState == TX_ON) {
+    //PrintSmallEx(LCD_XCENTER, BASE + 6, POS_C, C_FILL, "%s",
+    PrintSmallEx(0, BASE, POS_L, C_FILL, "%s",
+                 TX_POWER_NAMES[radio.power]);
+  } else
+    PrintSmallEx(0, BASE, POS_L, C_FILL, "TX Off");
+  
   if (radio.code.tx.type) {
     PrintRTXCode(String, radio.code.tx.type, radio.code.tx.value);
-    PrintSmallEx(0, BASE, POS_L, C_FILL, "T%s", String);
+    PrintSmallEx(0, BASE -6, POS_L, C_FILL, "T%s", String);
   }
+  
+    if (radio.code.rx.type && !gSettings.iAmPro ) {
+    PrintRTXCode(String, radio.code.rx.type, radio.code.rx.value);
+    PrintSmallEx(0, BASE - 12, POS_L, C_FILL, "R%s", String);
+  }
+
 
   if (gSettings.iAmPro) {
     uint32_t lambda = 29979246 / (radio.rxF / 100);

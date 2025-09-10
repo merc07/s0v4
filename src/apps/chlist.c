@@ -226,7 +226,8 @@ bool CHLIST_key(KEY_Code_t key, Key_State_t state) {
       viewMode = IncDecU(viewMode, 0, ARRAY_SIZE(VIEW_MODE_NAMES), true);
       return true;
     case KEY_MENU:
-      if (gChSaveMode) {
+    VFO_Select(3); // switch to VFO4 for loot over write   
+    if (gChSaveMode) {
         CHANNELS_LoadScanlist(gChListFilter, gSettings.currentScanlist);
 
         if (gChEd.name[0] == '\0') {
@@ -247,6 +248,7 @@ bool CHLIST_key(KEY_Code_t key, Key_State_t state) {
       APPS_exit();
       return true;
     case KEY_PTT:
+      VFO_Select(3); // switch to VFO4 for loot over write  
       RADIO_TuneToMR(chNum);
       APPS_run(APP_VFO1);
       return true;

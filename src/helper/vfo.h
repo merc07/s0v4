@@ -4,7 +4,7 @@
 #include "channels.h"
 #include <stdint.h>
 
-#define VFO_COUNT_MAX 16
+#define VFO_COUNT_MAX 4
 
 typedef struct {
   uint16_t mr;
