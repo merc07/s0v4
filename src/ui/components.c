@@ -17,9 +17,13 @@ void UI_Battery(uint8_t Level) {
 }
 
 void UI_TxBar(uint8_t y) {
+  if (gSettings.chDisplayMode ==3) {
+    y+=6;
+  }
   const uint8_t BAR_LEFT_MARGIN = 0;
   const uint8_t BAR_WIDTH = LCD_WIDTH - BAR_LEFT_MARGIN - 22;
   const uint8_t BAR_BASE = y + 7;
+  
   FillRect(0, y, LCD_WIDTH, 8, C_CLEAR);
   PrintMediumEx(LCD_WIDTH - 1, BAR_BASE, 2, true, "%u", gCurrentTxPower);
   const unsigned int level = MIN(BK4819_GetVoiceAmplitude() * 8, 65535u);
@@ -29,6 +33,9 @@ void UI_TxBar(uint8_t y) {
 }
 
 void UI_RSSIBar(uint8_t y) {
+  if (gSettings.chDisplayMode ==3) {
+    y+=6;
+  }
   uint16_t rssi = gLoot.rssi;
   if (rssi == 0) {
     return;
@@ -37,7 +44,7 @@ void UI_RSSIBar(uint8_t y) {
   const uint8_t BAR_LEFT_MARGIN = 0;
   const uint8_t BAR_WIDTH = LCD_WIDTH - BAR_LEFT_MARGIN - 22;
   const uint8_t BAR_BASE = y + 7;
-
+  
   FillRect(0, y, LCD_WIDTH, 8, C_CLEAR);
 
   const uint16_t SNR_MIN = 0;

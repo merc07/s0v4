@@ -173,7 +173,7 @@ class QuanshengUVK5Radio(chirp_common.CloneModeRadio):
         "M24M02"
     ]
     POWER_LEVELS = [
-        chirp_common.PowerLevel("ULow", watts=0.05),
+        chirp_common.PowerLevel("ULow", watts=0.01),
         chirp_common.PowerLevel("Low", watts=1.00),
         chirp_common.PowerLevel("Medium", watts=2.50),
         chirp_common.PowerLevel("High", watts=5.00),
@@ -305,6 +305,13 @@ class QuanshengUVK5Radio(chirp_common.CloneModeRadio):
         "W23k", 
         "W26k", 
     ]
+
+    
+
+    SCAN_LISTS_DECIMAL = [
+        "0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"
+    ]  
+     
 
     def get_features(self):
         rf = chirp_common.RadioFeatures()
@@ -486,32 +493,47 @@ class QuanshengUVK5Radio(chirp_common.CloneModeRadio):
                 _mem.gainIndex = 21
 
 
+
+              
+        # Convert _mem.scanlists from geometric sequence to decimal index
+        scanlist_decimal = 0
+        scanlists_val = _mem.scanlists
+        scld = 0  
+        for i in range(16):
+            if (scanlists_val >> i) & 1:
+                scanlist_decimal += 2 ** i
+                scld = i + 1
+
         mem.extra = RadioSettingGroup(
             "extra",
             "extra",
             RadioSetting("type", "Type", RadioSettingValueList(
-                self.CH_TYPE_NAMES,
-                current_index = _mem.meta.type
+            self.CH_TYPE_NAMES,
+            current_index = _mem.meta.type
             )),
             RadioSetting("gain", "Gain", RadioSettingValueList(
-                self.GAIN_NAMES,
-                current_index = _mem.gainIndex
+            self.GAIN_NAMES,
+            current_index = _mem.gainIndex
             )),
             RadioSetting("bw", "BW", RadioSettingValueList(
-                self.BW_NAMES,
-                current_index = _mem.bw
+            self.BW_NAMES,
+            current_index = _mem.bw
+            )),
+            RadioSetting("scl", "Scan List", RadioSettingValueList(
+            self.SCAN_LISTS_DECIMAL,
+            current_index = scld
             )),
             RadioSetting("radio", "Radio", RadioSettingValueList(
-                self.RADIO_NAMES,
-                current_index = _mem.radio
+            self.RADIO_NAMES,
+            current_index = _mem.radio
             )),
             RadioSetting("sq_type", "SQ type", RadioSettingValueList(
-                self.SQUELCH_TYPES,
-                current_index = _mem.squelch.type
+            self.SQUELCH_TYPES,
+            current_index = _mem.squelch.type
             )),
             RadioSetting("sq_value", "SQ", RadioSettingValueList(
-                self.SQUELCH_LEVELS,
-                current_index = _mem.squelch.value
+            self.SQUELCH_LEVELS,
+            current_index = _mem.squelch.value
             )),
             RadioSetting("allowTx", "TX", RadioSettingValueBoolean(_mem.allowTx))
         )
@@ -555,6 +577,12 @@ class QuanshengUVK5Radio(chirp_common.CloneModeRadio):
                     _mem.gainIndex = 21
             if sname == "bw":
                 _mem.bw = self.BW_NAMES.index(svalue)
+            if sname == "scl":
+                if self.SCAN_LISTS_DECIMAL.index(svalue) > 0:
+                    _mem.scanlists = 2 ** (self.SCAN_LISTS_DECIMAL.index(svalue) - 1)
+                else:
+                    _mem.scanlists = 0
+
             if sname == "allowTx":
                 _mem.allowTx = bool(svalue)
             if sname == "batteryCalibration":

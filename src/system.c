@@ -49,7 +49,15 @@ static void appRender() {
 
     ST7565_Blit();
     gRedrawScreen = false;
-  }
+
+ }
+ if (gSettings.chDisplayMode == 3) {
+    gSettings.beep=true;
+    gSettings.mWatch = MW_OFF;
+    gSettings.mainApp = APP_VFO1;
+    } else {
+      gSettings.beep=false;
+    }
 }
 
 static void systemUpdate() {
@@ -139,6 +147,7 @@ void SYS_Main() {
     gSettings.backlight = 5;
     APPS_run(APP_RESET);
   } else {
+        
     loadSettingsOrReset();
     BATTERY_UpdateBatteryInfo();
 
@@ -153,6 +162,11 @@ void SYS_Main() {
 
     Log("RUN DEFAULT APP");
     APPS_run(gSettings.mainApp);
+
+    if (gSettings.beep) {
+      AUDIO_PlayTone(1400, 50);
+      AUDIO_PlayTone(1400, 50);
+    }
   }
 
   for (;;) {

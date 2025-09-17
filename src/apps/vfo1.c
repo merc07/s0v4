@@ -20,6 +20,7 @@
 #include "chlist.h"
 #include "finput.h"
 
+
 static char String[16];
 static void setChannel(uint16_t v) { RADIO_TuneToCH(v); }
 
@@ -166,8 +167,10 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
       return true;
     case KEY_SIDE1:
     case KEY_SIDE2:
-      SP_NextGraphUnit(key == KEY_SIDE1);
-      return true;
+    if (gSettings.chDisplayMode != 3) {
+    SP_NextGraphUnit(key == KEY_SIDE1);
+    }
+    return true;
     case KEY_EXIT:
     APPS_run(APP_SCANER);
       return true;
@@ -220,8 +223,19 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
     APPS_run(APP_LOOT_LIST);
       return true;
     case KEY_SIDE1:
-      gMonitorMode = !gMonitorMode;
-      return true;
+    if (gSettings.chDisplayMode != 3) {
+        gMonitorMode = !gMonitorMode;
+      } else {
+        gSettings.toneLocal=true;
+        RADIO_ToggleTX(true);
+        const uint16_t M[] = {1000, 150, 0, 100, 1200, 150, 0, 0};
+        for (uint8_t i = 0; i < 3; ++i) {
+        BK4819_PlaySequence(M);
+        }
+        RADIO_ToggleTX(false);
+        gSettings.toneLocal=false;
+      }  
+    return true;
     case KEY_SIDE2:
       GPIO_FlipBit(&GPIOC->DATA, GPIOC_PIN_FLASHLIGHT);
       break;
@@ -247,6 +261,7 @@ static void renderTxRxState(uint8_t y, bool isTx) {
 }
 
 static void renderChannelName(uint8_t y, uint16_t channel) {
+  if (gSettings.chDisplayMode != 3) {
   FillRect(0, y - 14, 30, 7, C_FILL);
   PrintSmallEx(15, y - 9, POS_C, C_INVERT, "VFO %u/%u", gSettings.activeVFO +1,
                VFO_GetSize());
@@ -254,7 +269,7 @@ static void renderChannelName(uint8_t y, uint16_t channel) {
     PrintSmallEx(32, y - 9, POS_L, C_FILL, "MR %03u", channel);
     UI_Scanlists(LCD_WIDTH - 25, y - 13, gSettings.currentScanlist);
   }
-}
+}}
 
 static void renderProModeInfo(uint8_t y) {
   if (radio.radio == RADIO_BK4819) {
@@ -267,7 +282,7 @@ static void renderProModeInfo(uint8_t y) {
 
 void VFO1_render(void) {
   const uint8_t BASE = 40;
-
+   if (gSettings.chDisplayMode !=3) { 
   if (gIsNumNavInput) {
     STATUSLINE_SetText("Select: %s", gNumNavInput);
   } else if (gSettings.iAmPro &&
@@ -276,12 +291,20 @@ void VFO1_render(void) {
   } else {
     STATUSLINE_SetText(radio.name);
   }
+} else {
+  STATUSLINE_SetText("Battery Level");
+}
+
 
   uint32_t f = gTxState == TX_ON ? RADIO_GetTXF() : GetScreenF(radio.rxF);
   const char *mod = modulationTypeOptions[radio.modulation];
 
   if (RADIO_IsChMode()) {
+    if (gSettings.chDisplayMode !=3) {
     PrintMediumEx(LCD_XCENTER, BASE - 16, POS_C, C_FILL, radio.name);
+    } else {
+      PrintMediumBoldEx(LCD_XCENTER, BASE - 12, POS_C, C_FILL, radio.name);
+    }
   } else {
     if (gCurrentBand.meta.type == TYPE_BAND_DETACHED) {
       PrintSmallEx(32, 12, POS_L, C_FILL, "*%s", gCurrentBand.name );
@@ -295,6 +318,7 @@ void VFO1_render(void) {
   // Шаг, полоса, уровень SQL, мощность, субтоны, названия каналов.
   // Step, Bandwidth, SQL Level, Power, Subtones, Channel Names.
 
+  if (gSettings.chDisplayMode !=3) {
   renderTxRxState(BASE, gTxState == TX_ON);
   UI_BigFrequency(BASE, f);
   PrintMediumEx(LCD_WIDTH - 1, BASE - 12, POS_R, C_FILL, mod);
@@ -303,6 +327,7 @@ void VFO1_render(void) {
   
   PrintSmallEx(LCD_WIDTH, BASE + 6, POS_R, C_FILL, "%d.%02d", step / KHZ,
                step % KHZ);
+  
 
     if (potentialTxState == TX_ON) {
     //PrintSmallEx(LCD_XCENTER, BASE + 6, POS_C, C_FILL, "%s",
@@ -320,7 +345,10 @@ void VFO1_render(void) {
     PrintRTXCode(String, radio.code.rx.type, radio.code.rx.value);
     PrintSmallEx(0, BASE - 12, POS_L, C_FILL, "R%s", String);
   }
-
+} else {
+  PrintMediumEx(LCD_XCENTER, BASE, POS_C, C_FILL, "TX Power: %s",
+        TX_POWER_NAMES[radio.power]);
+}
 
   if (gSettings.iAmPro) {
     uint32_t lambda = 29979246 / (radio.rxF / 100);
@@ -385,7 +413,7 @@ void VFO1_render(void) {
     }
   }
 
-  if (gLastActiveLoot) {
+  if (gLastActiveLoot && gSettings.chDisplayMode !=3 ) {
     const uint32_t ago = (Now() - gLastActiveLoot->lastTimeOpen) / 1000;
     if (gLastActiveLoot->ct != 255) {
       PrintRTXCode(String, CODE_TYPE_CONTINUOUS_TONE, gLastActiveLoot->ct);
