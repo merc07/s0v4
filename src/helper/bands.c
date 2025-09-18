@@ -55,8 +55,8 @@ PCal POWER_CALIBRATIONS[] = {
      (PCal){.s = 43000000, .e = 46999999, .c = DEFAULT_POWER_CALIB},
      (PCal){.s = 47000000, .e = 61999999, .c = {50, 100, 140}},
 
-   
-
+   */
+    /*
     // Standard UV-K6 Power Calibration
 
     (PCal){.s = 13500000, .e = 16499999, .c = {38, 65, 140}},

@@ -333,9 +333,9 @@ void VFO1_render(void) {
     //PrintSmallEx(LCD_XCENTER, BASE + 6, POS_C, C_FILL, "%s",
     PrintSmallEx(0, BASE, POS_L, C_FILL, "%s",
                  TX_POWER_NAMES[radio.power]);
-  } else
+  } else {
     PrintSmallEx(0, BASE, POS_L, C_FILL, "TX Off");
-  
+  }
   if (radio.code.tx.type) {
     PrintRTXCode(String, radio.code.tx.type, radio.code.tx.value);
     PrintSmallEx(0, BASE -6, POS_L, C_FILL, "T%s", String);
@@ -346,8 +346,12 @@ void VFO1_render(void) {
     PrintSmallEx(0, BASE - 12, POS_L, C_FILL, "R%s", String);
   }
 } else {
+  if (potentialTxState == TX_ON) {
   PrintMediumEx(LCD_XCENTER, BASE, POS_C, C_FILL, "TX Power: %s",
         TX_POWER_NAMES[radio.power]);
+} else {
+  PrintMediumEx(LCD_XCENTER, BASE, POS_C, C_FILL, "TX Disabled");
+}
 }
 
   if (gSettings.iAmPro) {

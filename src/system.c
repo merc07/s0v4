@@ -55,6 +55,13 @@ static void appRender() {
     gSettings.beep=true;
     gSettings.mWatch = MW_OFF;
     gSettings.mainApp = APP_VFO1;
+    if (!RADIO_IsChMode()) {
+      RADIO_ToggleVfoMR();
+    }
+    if (gSettings.iAmPro) {
+      gSettings.iAmPro = !gSettings.iAmPro;
+    };
+    //gSettings.keylock = true;
     } else {
       gSettings.beep=false;
     }
