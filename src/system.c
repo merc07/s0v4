@@ -50,21 +50,9 @@ static void appRender() {
     ST7565_Blit();
     gRedrawScreen = false;
 
+
  }
- if (gSettings.chDisplayMode == 3) {
-    gSettings.beep=true;
-    gSettings.mWatch = MW_OFF;
-    gSettings.mainApp = APP_VFO1;
-    if (!RADIO_IsChMode()) {
-      RADIO_ToggleVfoMR();
-    }
-    if (gSettings.iAmPro) {
-      gSettings.iAmPro = !gSettings.iAmPro;
-    };
-    //gSettings.keylock = true;
-    } else {
-      gSettings.beep=false;
-    }
+ 
 }
 
 static void systemUpdate() {
@@ -167,6 +155,24 @@ void SYS_Main() {
     Log("INIT RADIO");
     RADIO_Init();
 
+    if (gSettings.chDisplayMode == 3) {
+    gSettings.beep=true;
+    gSettings.mWatch = MW_OFF;
+    gSettings.iAmPro = false;
+    gSettings.keylock = true;
+    
+    if (!RADIO_IsChMode()) {
+      RADIO_ToggleVfoMR();
+    }
+    
+    gSettings.mainApp = APP_VFO1;
+    
+    
+    
+    } else {
+      gSettings.beep=false;
+    }
+    
     Log("RUN DEFAULT APP");
     APPS_run(gSettings.mainApp);
 

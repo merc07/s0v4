@@ -154,7 +154,8 @@ bool VFO1_key(KEY_Code_t key, Key_State_t state) {
       RADIO_ToggleTxPower();
       return true;
     case KEY_7:
-      RADIO_UpdateStep(true);
+      gSettings.mWatch = (gSettings.mWatch + 1) % 3;
+      //RADIO_UpdateStep(true);
       return true;
     case KEY_8:
       radio.offsetDir = IncDecU(radio.offsetDir, 0, OFFSET_MINUS, true);
@@ -266,7 +267,7 @@ static void renderChannelName(uint8_t y, uint16_t channel) {
   PrintSmallEx(15, y - 9, POS_C, C_INVERT, "VFO %u/%u", gSettings.activeVFO +1,
                VFO_GetSize());
   if (RADIO_IsChMode()) {
-    PrintSmallEx(32, y - 9, POS_L, C_FILL, "MR %03u", channel);
+    PrintSmallEx(32, y - 9, POS_L, C_FILL, "MR %03u MW:%.3s", channel, MW_NAMES[gSettings.mWatch]);
     UI_Scanlists(LCD_WIDTH - 25, y - 13, gSettings.currentScanlist);
   }
 }}
@@ -307,11 +308,11 @@ void VFO1_render(void) {
     }
   } else {
     if (gCurrentBand.meta.type == TYPE_BAND_DETACHED) {
-      PrintSmallEx(32, 12, POS_L, C_FILL, "*%s", gCurrentBand.name );
+      PrintSmallEx(32, 12, POS_L, C_FILL, "*%s MW:%.3s", gCurrentBand.name , MW_NAMES[gSettings.mWatch]);
     } else {
       PrintSmallEx(
-          32, 12, POS_L, C_FILL, radio.fixedBoundsMode ? "=%s:%u" : "%s:%u",
-          gCurrentBand.name, CHANNELS_GetChannel(&gCurrentBand, radio.rxF) + 1);
+          32, 12, POS_L, C_FILL, radio.fixedBoundsMode ? "=%s:%u" : "%s:%u MW:%.3s",
+          gCurrentBand.name, CHANNELS_GetChannel(&gCurrentBand, radio.rxF) + 1, MW_NAMES[gSettings.mWatch]);
     }
   }
 

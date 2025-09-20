@@ -268,6 +268,15 @@ static void accept(void) {
     break;
   case M_CH_DISP_MODE:
     gSettings.chDisplayMode = subMenuIndex;
+    if (gSettings.chDisplayMode == 3) {
+      gSettings.beep = true;
+      gSettings.mWatch = MW_OFF;
+      gSettings.iAmPro = false;
+      gSettings.mainApp = APP_VFO1;
+        if (!RADIO_IsChMode()) {
+          RADIO_ToggleVfoMR();
+    }}
+       
     SETTINGS_Save();
     break;
   case M_MWATCH:
